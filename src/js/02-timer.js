@@ -8,6 +8,8 @@ const hoursNumberEl = document.querySelector('[data-hours]');
 const minutesNumberEl = document.querySelector('[data-minutes]');
 const secondsNumberEl = document.querySelector('[data-seconds]');
 
+let selectedTime;
+
 startTimerBtn.disabled = true;
 
 const addLeadingZero = (value) => {
@@ -16,22 +18,12 @@ const addLeadingZero = (value) => {
 
 const onDatePicker = selectedDates => {
     console.log(selectedDates[0]);
-    if (selectedDates[0] < new Date()) {
-        window.alert('Please choose a date in the future');
-        return
+    selectedTime = selectedDates[0];
+    if (selectedTime < new Date()) {
+      window.alert('Please choose a date in the future');
+      return;
     }
     startTimerBtn.disabled = false;
-    
-    const currentTime = options.defaultDate;
-    const currentTimeNumber = currentTime.getTime();
-    const selectedDateNumber = selectedDates[0].getTime();
-    const deltaTime = selectedDateNumber - currentTimeNumber;
-    const time = convertMs(deltaTime);
-    console.log(time);
-    daysNumberEl.textContent = addLeadingZero(time.days);
-    hoursNumberEl.textContent = addLeadingZero(time.hours);
-    minutesNumberEl.textContent = addLeadingZero(time.minutes);
-    secondsNumberEl.textContent = addLeadingZero(time.seconds);
 };
 
 const options = {
@@ -44,11 +36,33 @@ const options = {
 
 flatpickr(dateTimeInput, options);
 
+const updateClockface = () => {
+    const intervalId = setInterval(() => {
+      const currentTime = Date.now();
+      const selectedDateNumber = selectedTime.getTime();
+      const deltaTime = selectedDateNumber - currentTime;
+      const time = convertMs(deltaTime);
+      console.log(deltaTime);
+      if (deltaTime < 0) {
+          clearInterval(intervalId);
+          dateTimeInput.disabled = false;
+        return;
+      }
+      daysNumberEl.textContent = addLeadingZero(time.days);
+      hoursNumberEl.textContent = addLeadingZero(time.hours);
+      minutesNumberEl.textContent = addLeadingZero(time.minutes);
+      secondsNumberEl.textContent = addLeadingZero(time.seconds);
+    }, 1000);
+}
+
 const onStartTimerBtnClick = () => {
     console.log('click');
-};
-startTimerBtn.addEventListener('click', onStartTimerBtnClick);
+    startTimerBtn.disabled = true;
+    dateTimeInput.disabled = true;
+    updateClockface();
+}
 
+startTimerBtn.addEventListener('click', onStartTimerBtnClick);
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
