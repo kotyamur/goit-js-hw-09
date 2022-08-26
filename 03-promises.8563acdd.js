@@ -1,0 +1,2 @@
+!function(){var e=document.querySelector(".form");document.querySelector('button[type="submit"]');e.addEventListener("submit",(function(e){e.preventDefault(),console.log(e.currentTarget.elements),console.log(e.currentTarget.elements.delay.value),console.log(e.currentTarget.elements.step.value),console.log(e.currentTarget.elements.amount.value)}))}();
+//# sourceMappingURL=03-promises.8563acdd.js.map
