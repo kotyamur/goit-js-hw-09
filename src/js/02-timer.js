@@ -30,6 +30,7 @@ const onDatePicker = selectedDates => {
       timeout: 2500,
       width: '300px',
       clickToClose: true,
+      position: 'center-top',
     });
     return;
   }
