@@ -10,57 +10,57 @@ const secondsNumberEl = document.querySelector('[data-seconds]');
 
 let selectedTime;
 
-startTimerBtn.disabled = true;
+const addLeadingZero = value => {
+  return String(value).padStart(2, '0');
+};
 
-const addLeadingZero = (value) => {
-    return String(value).padStart(2, '0');
-}
+const setTimer = ({ days, hours, minutes, seconds }) => {
+  daysNumberEl.textContent = addLeadingZero(days);
+  hoursNumberEl.textContent = addLeadingZero(hours);
+  minutesNumberEl.textContent = addLeadingZero(minutes);
+  secondsNumberEl.textContent = addLeadingZero(seconds);
+};
 
 const onDatePicker = selectedDates => {
-    console.log(selectedDates[0]);
-    selectedTime = selectedDates[0];
-    if (selectedTime < new Date()) {
-      window.alert('Please choose a date in the future');
-      return;
-    }
-    startTimerBtn.disabled = false;
+  selectedTime = selectedDates[0];
+  if (selectedTime < new Date()) {
+    window.alert('Please choose a date in the future');
+    return;
+  }
+  startTimerBtn.disabled = false;
 };
 
 const options = {
-    enableTime: true,
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose: onDatePicker,
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose: onDatePicker,
 };
 
 flatpickr(dateTimeInput, options);
 
 const updateClockface = () => {
-    const intervalId = setInterval(() => {
-      const currentTime = Date.now();
-      const selectedDateNumber = selectedTime.getTime();
-      const deltaTime = selectedDateNumber - currentTime;
-      const time = convertMs(deltaTime);
-      console.log(deltaTime);
-      if (deltaTime < 0) {
-          clearInterval(intervalId);
-          dateTimeInput.disabled = false;
-        return;
-      }
-      daysNumberEl.textContent = addLeadingZero(time.days);
-      hoursNumberEl.textContent = addLeadingZero(time.hours);
-      minutesNumberEl.textContent = addLeadingZero(time.minutes);
-      secondsNumberEl.textContent = addLeadingZero(time.seconds);
-    }, 1000);
-}
+  const intervalId = setInterval(() => {
+    const currentTimestamp = Date.now();
+    const selectedTimestamp = selectedTime.getTime();
+    const deltaTimestamp = selectedTimestamp - currentTimestamp;
+
+    if (deltaTimestamp < 0) {
+      clearInterval(intervalId);
+      dateTimeInput.disabled = false;
+      return;
+    }
+
+    setTimer(convertMs(deltaTimestamp));
+  }, 1000);
+};
 
 const onStartTimerBtnClick = () => {
-    console.log('click');
-    startTimerBtn.disabled = true;
-    dateTimeInput.disabled = true;
-    updateClockface();
-}
+  startTimerBtn.disabled = true;
+  dateTimeInput.disabled = true;
+  updateClockface();
+};
 
 startTimerBtn.addEventListener('click', onStartTimerBtnClick);
 

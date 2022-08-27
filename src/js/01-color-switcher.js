@@ -1,26 +1,26 @@
 const startBtn = document.querySelector('button[data-start]');
 const stopBtn = document.querySelector('button[data-stop]');
 
-stopBtn.disabled = true;
-
 let timerId = null;
 
-const onStartBtnClick = () => {
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-    document.body.style.backgroundColor = getRandomHexColor();
+const toggleFlow = isStarted => {
+  startBtn.disabled = isStarted;
+  stopBtn.disabled = !isStarted;
+};
 
-    timerId = setInterval(() => {
-        const newColor = getRandomHexColor();
-        console.log(newColor);
-        document.body.style.backgroundColor = newColor;
-    }, 1000);
-}
+const setRandomBackground = () => {
+  document.body.style.backgroundColor = getRandomHexColor();
+};
+
+const onStartBtnClick = () => {
+  toggleFlow(true);
+  setRandomBackground();
+  timerId = setInterval(setRandomBackground, 1000);
+};
 
 const onStopBtnClick = () => {
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-    clearInterval(timerId);
+  toggleFlow(false);
+  clearInterval(timerId);
 };
 
 startBtn.addEventListener('click', onStartBtnClick);
